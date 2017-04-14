@@ -37,6 +37,36 @@ func (s *Sensibo) get(resource string, values url.Values) ([]byte, error) {
 	return body, nil
 }
 
+func (s *Sensibo) post(resource string, data string) ([]byte, error) {
+	buffer := bytes.NewBufferString(data)
+	body, err := s.client.Post(s.resourceUrl(resource, url.Values{}), "application/json", buffer)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
+
+func (s *Sensibo) patch(resource string, data string) ([]byte, error) {
+	buffer := bytes.NewBufferString(data)
+	body, err := s.client.Patch(s.resourceUrl(resource, url.Values{}), "application/json", buffer)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
+
 func (s *Sensibo) resourceUrl(resource string, values url.Values) string {
 	values["apiKey"] = []string{s.Key}
 	fullUrl := &url.URL{
