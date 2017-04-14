@@ -1,0 +1,1 @@
+# Sensibo API for Go
