@@ -48,3 +48,27 @@ func (s *Sensibo) GetAcStates(deviceID string) ([]AcStateLog, error) {
 
 	return result.Result, nil
 }
+
+func (s *Sensibo) ReplaceState(deviceID string, state AcState) (*AcStateLog, error) {
+	currentStateData, err := json.Marshal(struct {
+		AcState AcState `json:"acState"`
+	}{state})
+	if err != nil {
+		return nil, err
+	}
+
+	var result struct {
+		Status string     `json:"status"`
+		Result AcStateLog `json:"result"`
+	}
+	data, err := s.post(fmt.Sprintf("pods/%v/acStates", deviceID), currentStateData)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(data, &result)
+	if err != nil {
+		return nil, err
+	}
+	return &result.Result, nil
+}
